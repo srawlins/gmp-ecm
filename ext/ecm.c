@@ -32,7 +32,9 @@ VALUE r_ecmsg_new(int argc, VALUE *argv, VALUE klass)
 
 VALUE r_ecm_factor (int argc, VALUE *argv, VALUE self_value) {
   MP_INT *self, *res;
-  VALUE res_value;
+  VALUE res_value, b1_value, params_value;
+  ECM_PARAMS *params;
+  double b1;
   int found;
   (void)self;
 
@@ -40,13 +42,31 @@ VALUE r_ecm_factor (int argc, VALUE *argv, VALUE self_value) {
   mpz_make_struct (res_value, res);
   mpz_init (res);
 
-  found = ecm_factor (res, self, 11e7, NULL);
+  rb_scan_args (argc, argv, "02", &b1_value, &params_value);
+  if (params_value == Qnil) {
+    params = NULL;
+  } else if (ECM_PARAMS_P (params_value)) {
+    ecm_params_get_struct (params_value, params);
+  } else {
+    rb_raise (rb_eArgError, "Second argument must be an ECMParams");
+  }
+  if (b1_value == Qnil) {
+    b1 = 1000000;
+  } else if (FIXNUM_P (b1_value)) {
+    b1 = (double) NUM2INT (b1_value);
+  } else if (FLOAT_P (b1_value)) {
+    b1 = NUM2DBL (b1_value);
+  } else {
+    rb_raise (rb_eArgError, "b1 argument must be a Fixnum");
+  }
+
+  found = ecm_factor (res, self, b1, params);
 
   return res_value;
-//  return INT2NUM(found);
 }
 
 void Init_ecm() {
+  rb_require("gmp");
   cECM_PARAMS = rb_define_class ("ECMParams", rb_cObject);
 
   // Initialization Functions and Assignment Functions
