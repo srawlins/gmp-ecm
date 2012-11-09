@@ -2,3 +2,6 @@ ext/Makefile
 ext/*.o
 ext/*.bundle
 ext/*.a
+.yardoc
+doc
+Gemfile.lock
