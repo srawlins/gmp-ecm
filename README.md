@@ -12,6 +12,27 @@ The function of the gmp_ecm library is contained almost entirely in the `GMP::Z#
 
 Just now, not all of the fields in `ecm_params` is available. The current list of supported parameters is in the docs.
 
+Examples
+========
+
+Here is an example of repeatedly hitting up GMP-ECM for factors of `2**71 - 1`:
+
+```ruby
+z = GMP::Z(2)**71 - 1 #=> 2361183241434822606847
+z.ecm_factor(1_000_000)  #=> [1, 2361183241434822606847]
+z.ecm_factor(1_000_000)  #=> [1, 11091312221959]
+z.ecm_factor(1_000_000)  #=> [1, 2361183241434822606847]
+z.ecm_factor(1_000_000)  #=> [1, 2361183241434822606847]
+z.ecm_factor(1_000_000)  #=> [1, 48639942238007]
+```
+
+`GMP::Z#ecm_factor` returns a pair. The first element tells whether or not a factor was found:
+
+* 1 means a factor was found in step 1.
+* 2 means a factor was found in step 2.
+* 0 means no factor was found.
+* a negative value means an error occurred.
+
 License
 =======
 
