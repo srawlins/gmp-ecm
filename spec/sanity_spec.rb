@@ -40,4 +40,22 @@ describe ECMParams, "new" do
   it "should allow a simple hash with :B1done" do
     @z3.ecm_factor 1_000_000, :sigma =>  GMP::Z(781683988), :go => GMP::Z(550232165123), :B1done => 1000.0
   end
+
+  it "should allow a simple hash with :B2min" do
+    @z2.ecm_factor 1_000_000, :B2min => 2_000_000
+  end
+
+  it "should allow a simple hash with :B2min" do
+    @z2.ecm_factor 1_000_000, :B2 => 2_000_000
+  end
+end
+
+describe ECMParams, "bad types" do
+  before do
+    @z = GMP::Z(2)**255 - 1
+  end
+
+  it "should blow up if sigma_is_A is not a Fixnum" do
+    expect { @z1.ecm_factor 1_000_000, :sigma => 7, :sigma_is_A => 2.3 }.to raise_exception
+  end
 end
