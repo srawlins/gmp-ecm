@@ -1,0 +1,6 @@
+--template-path ~/code/yard_mathjax_tamplate/templates
+--template mathjax
+--markup markdown
+-
+README.md
+COPYING.md
