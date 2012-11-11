@@ -5,3 +5,5 @@ ext/*.a
 .yardoc
 doc
 Gemfile.lock
+msieve.*
+*.gem
