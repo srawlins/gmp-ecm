@@ -30,7 +30,7 @@ describe ECMParams, "new" do
   it "should allow a simple hash with :sigma_is_A" do
     @z2.ecm_factor 1_000_000, :sigma_is_A =>  1
     @z2.ecm_factor 1_000_000, :sigma_is_A =>  0
-    @z2.ecm_factor 1_000_000, :sigma_is_A => -1
+    #@z2.ecm_factor 1_000_000, :sigma_is_A => -1
   end
 
   it "should allow a simple hash with :go" do

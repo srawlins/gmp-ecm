@@ -33,6 +33,16 @@ z.ecm_factor(1_000_000)  #=> [1, 48639942238007]
 * 0 means no factor was found.
 * a negative value means an error occurred.
 
+ECMParams
+=========
+
+The ECMParams class is not implemented yet. For now, you can supply the `ecm_params` parameter as a hash:
+
+* Any value expected to be a `mpz_t` can be a Fixnum or a `GMP::Z`.
+* Any value expected to be an `int`, including `unsigned`, must be a Fixnum.
+* Any value expected to be a double must be a ruby Float.
+* Any value expected to be a `FILE*` must be a ruby IO object, typically created with `File.open('filename', 'w')`.
+
 License
 =======
 
