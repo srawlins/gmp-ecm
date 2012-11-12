@@ -5,6 +5,7 @@
  */
 
 #include <ruby_ecm.h>
+#include <ruby/io.h>
 
 /*********************************************************************
  *    Initialization Functions                                       *
@@ -27,6 +28,8 @@ ID ecmp_S_id;
 ID ecmp_repr_id;
 ID ecmp_nobase2step2_id;
 ID ecmp_verbose_id;
+ID ecmp_os_id;
+ID ecmp_es_id;
 //void r_ecm_params_free(void *ptr) { ecm_clear (ptr); free (ptr); }
 void r_ecm_params_free(void *ptr) { ecm_clear (ptr); }
 
@@ -34,6 +37,8 @@ int add_item_to_ecm_params (VALUE key, VALUE value, VALUE params_value) {
   ECM_PARAMS *params;
   ecm_params_get_struct (params_value, params);
   MP_INT *params_x, *params_sigma, *params_go, *params_B2min, *params_B2;
+  FILE *fd;
+  struct RFile *params_os;
   if (rb_to_id (key) == ecmp_method_id) {
     if      ( rb_to_id (value) == ecmp_ecm_ecm_id) { params->method = ECM_ECM; }
     else if ( rb_to_id (value) == ecmp_ecm_pm1_id) { params->method = ECM_PM1; }
@@ -105,8 +110,20 @@ int add_item_to_ecm_params (VALUE key, VALUE value, VALUE params_value) {
       rb_raise (rb_eTypeError, "verbose must be a Fixnum.");
     }
     params->verbose = NUM2INT(value);
+  } else if (rb_to_id (key) == ecmp_os_id) {
+    if (TYPE (value) != T_FILE) {
+      rb_raise (rb_eTypeError, "os must be an IO.");
+    }
+    fd = rb_io_stdio_file(RFILE(value)->fptr);
+    params->os = fd;
+  } else if (rb_to_id (key) == ecmp_es_id) {
+    if (TYPE (value) != T_FILE) {
+      rb_raise (rb_eTypeError, "es must be an IO.");
+    }
+    fd = rb_io_stdio_file(RFILE(value)->fptr);
+    params->es = fd;
   }
-  return 1;
+  return ST_CONTINUE;
 }
 
 /*
@@ -155,6 +172,8 @@ VALUE r_ecmsg_new(int argc, VALUE *argv, VALUE klass)
    *   @option ecm_params [Fixnum] :S defines the polynomial used for Brent-Suyama's extension in stage 2. If positive, the polynomial used is $x^S$; if negative, it is Dickson's polynomial of degree $S$ with parameter $a=-1$, where $D\_\\{1,a\}(x) = x, D\_\\{2,a\}(x) = x^2-2\*a$, and $D\_\\{k+2,a\}(x) = x\*D\_\\{k+1,a\}(x) - a\*D\_\\{k,a\}(x)$, or equivalently $D\_\\{k,a\}(2\*sqrt(a)\*cos(t)) = 2\*a^\\{k/2\}\*cos(k\*t)$. If zero, choice is automatic (and should be close to optimal). Default is `ECM_DEFAULT_S`.
    *   @option ecm_params [Fixnum] :repr defines the representation used for modular arithmetic: 1 means the 'mpz' class from GMP, 2 means 'modmuln' (Montgomery's multiplication, quadratic implementation), 3 means 'redc' (Montgomery's multiplication, subquadratic implementation), -1 indicates not to use a special base-2 representation (when the input number is a factor of $2^n +/- 1$). Other values (including 0) mean the representation will be chosen automatically (hopefully in some optimal way).
    *   @option ecm_params [Fixnum] :verbose the verbosity level: 0 for no output, 1 for normal output (like default for GMP-ECM), 2 for diagnostic output without intermediate residues (like `-v` in GMP-ECM), 3 for diagnostic output with residues (like `-v -v`), 4 for high diagnostic output (`-v -v -v`), and 5 for trace output (`-v -v -v -v`).
+   *   @option ecm_params [IO] :os the output stream used for verbose output. Default is stdout.
+   *   @option ecm_params [IO] :es the output stream used for errors. Default is stderr.
    */
 VALUE r_ecm_factor (int argc, VALUE *argv, VALUE self_value) {
   MP_INT *self, *res;
@@ -202,7 +221,7 @@ void Init_ecm() {
   ecmp_x_id            = rb_intern("x");
   ecmp_sigma_id        = rb_intern("sigma");
   ecmp_sigma_is_A_id   = rb_intern("sigma_is_A");
-  ecmp_sigma_is_A_id   = rb_intern("go");
+  ecmp_go_id           = rb_intern("go");
   ecmp_B1done_id       = rb_intern("B1done");
   ecmp_B2min_id        = rb_intern("B2min");
   ecmp_B2_id           = rb_intern("B2");
@@ -211,6 +230,8 @@ void Init_ecm() {
   ecmp_repr_id         = rb_intern("repr");
   ecmp_nobase2step2_id = rb_intern("nobase2step2");
   ecmp_verbose_id      = rb_intern("verbose");
+  ecmp_os_id           = rb_intern("os");
+  ecmp_es_id           = rb_intern("es");
   cECM_PARAMS = rb_define_class ("ECMParams", rb_cObject);
 
   // Initialization Functions and Assignment Functions
