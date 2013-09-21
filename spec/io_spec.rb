@@ -34,7 +34,7 @@ describe GMP::Z, "IO operations" do
     lines = File.read @file
     lines.should match(/Using special division for factor of 2\^71-1/)
     lines.should match(/Using B1=1000000, B2=\d+, polynomial Dickson\(6\), sigma=\d+/)
-    lines.should match(/Using dF=\d+, k=\d+, d=\d+, d2=\d+, i0=\d+/)
+    lines.should match(/Using .*dF=\d+, k=\d+, d=\d+, d2=\d+, i0=\d+/m)
     lines.should match(/Step 1 took \d+ms/)
   end
 end

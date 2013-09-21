@@ -28,8 +28,8 @@ describe ECMParams, "new" do
   end
 
   it "should allow a simple hash with :sigma_is_A" do
-    @z2.ecm_factor 1_000_000, :sigma_is_A =>  1
-    @z2.ecm_factor 1_000_000, :sigma_is_A =>  0
+    @z2.ecm_factor 1_000_000, :sigma_is_A =>  1, :x => GMP::Z(7)
+    @z2.ecm_factor 1_000_000, :sigma_is_A =>  0, :x => GMP::Z(7)
     #@z2.ecm_factor 1_000_000, :sigma_is_A => -1
   end
 

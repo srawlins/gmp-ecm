@@ -2,6 +2,7 @@ ext/Makefile
 ext/*.o
 ext/*.bundle
 ext/*.a
+ext/mkmf.log
 .yardoc
 doc
 Gemfile.lock

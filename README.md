@@ -1,16 +1,34 @@
 GMP-ECM
 =======
 
-GMP-ECM is a C implementation of the [Elliptic Curve Method](http://en.wikipedia.org/wiki/Elliptic_curve_method) for factorizing integers. This library, gmp_ecm, provides Ruby bindings to this library.
+This library, gmp_ecm, provides Ruby bindings to GMP-ECM, a C implementation of
+the [Elliptic Curve Method](http://en.wikipedia.org/wiki/Elliptic_curve_method)
+for factorizing integers.
 
-The only prerequisite to using gmp_ecm is the [gmp](https://github.com/srawlins/gmp) gem, which provides Ruby bindings to GMP, a prerequisite to using the GMP-ECM library. The gmp gem is required because most numbers (input integer, resultant factors, and various parameters) are passed around as `GMP::Z` numbers.
+Install
+=======
+
+If you're using Bundler, add `gem 'gmp_ecm'` to your Gemfile.
+
+If you just want to install with Rubygems, just `gem install gmp_ecm`.
+
+The only dependency is the [gmp](https://github.com/srawlins/gmp) gem, which
+provides Ruby bindings to GMP. The gmp gem is required because gmp_ecm passes
+around most numbers (input integer, resultant factors, and various parameters)
+as `GMP::Z` numbers.
 
 Usage
 =====
 
-The function of the gmp_ecm library is contained almost entirely in the `GMP::Z#ecm_factor` method (binding to GMP-ECM's `ecm_params` C function). So in order to start factorizing an integer, one must first initialize a `GMP::Z` number, and then call `#ecm_factor` against it. Just as in the C library, this method requires the `B1` parameter to be passed in. Optionally, the user can pass in a second parameter, a Hash, or an ECMParams object. This will be passed to `ecm_factor` as an `ecm_params` struct.
+gmp_ecm essentially just provides the
+`GMP::Z#ecm_factor` method (binding to GMP-ECM's `ecm_params` C function). So
+in order to start factorizing an integer, one must first initialize a `GMP::Z`
+integer, and then call `#ecm_factor`. Just as in the C library, this
+method requires the `B1` parameter as the first parameter. Optionally, you can
+pass in a second parameter, the params, as either a Hash or an ECMParams object.
 
-Just now, not all of the fields in `ecm_params` is available. The current list of supported parameters is in the docs.
+Not all of the fields in `ecm_params` are available yet. The current list of
+supported parameters is in the docs.
 
 Examples
 ========
@@ -26,7 +44,8 @@ z.ecm_factor(1_000_000)  #=> [1, 2361183241434822606847]
 z.ecm_factor(1_000_000)  #=> [1, 48639942238007]
 ```
 
-`GMP::Z#ecm_factor` returns a pair. The first element tells whether or not a factor was found:
+`GMP::Z#ecm_factor` returns a pair. The first element tells whether or not a
+factor was found:
 
 * 1 means a factor was found in step 1.
 * 2 means a factor was found in step 2.

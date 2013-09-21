@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = "gmp_ecm"
-  s.version = "0.3.0"
+  s.version = "0.3.1"
   s.authors = ["srawlins"]
   s.date = "2012-11-09"
   s.description = "gmp_ecm - Elliptic Curve Method Factorization on GMP::Z integers"

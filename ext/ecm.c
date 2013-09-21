@@ -30,6 +30,10 @@ ID ecmp_nobase2step2_id;
 ID ecmp_verbose_id;
 ID ecmp_os_id;
 ID ecmp_es_id;
+ID ecmp_chkfilename_id;
+ID ecmp_TreeFilename_id;
+ID ecmp_maxmem_id;
+ID ecmp_stage1time_id;
 //void r_ecm_params_free(void *ptr) { ecm_clear (ptr); free (ptr); }
 void r_ecm_params_free(void *ptr) { ecm_clear (ptr); }
 
@@ -38,7 +42,6 @@ int add_item_to_ecm_params (VALUE key, VALUE value, VALUE params_value) {
   ecm_params_get_struct (params_value, params);
   MP_INT *params_x, *params_sigma, *params_go, *params_B2min, *params_B2;
   FILE *fd;
-  struct RFile *params_os;
   if (rb_to_id (key) == ecmp_method_id) {
     if      ( rb_to_id (value) == ecmp_ecm_ecm_id) { params->method = ECM_ECM; }
     else if ( rb_to_id (value) == ecmp_ecm_pm1_id) { params->method = ECM_PM1; }
@@ -122,6 +125,24 @@ int add_item_to_ecm_params (VALUE key, VALUE value, VALUE params_value) {
     }
     fd = rb_io_stdio_file(RFILE(value)->fptr);
     params->es = fd;
+  } else if (rb_to_id (key) == ecmp_chkfilename_id) {
+    if (TYPE (value) != T_STRING) {
+      rb_raise (rb_eTypeError, "chkfilename must be a String.");
+    }
+    params->chkfilename = malloc (sizeof(char) * strlen (StringValuePtr (value)));
+    strcpy (params->chkfilename, StringValuePtr (value));
+  } else if (rb_to_id (key) == ecmp_maxmem_id) {
+    if (FIXNUM_P (value)) {
+      params->maxmem = (double) NUM2INT (value);
+    } else if (FLOAT_P (value)) {
+      params->maxmem = NUM2DBL (value);
+    }
+  } else if (rb_to_id (key) == ecmp_stage1time_id) {
+    if (FIXNUM_P (value)) {
+      params->stage1time = (double) NUM2INT (value);
+    } else if (FLOAT_P (value)) {
+      params->stage1time = NUM2DBL (value);
+    }
   }
   return ST_CONTINUE;
 }
@@ -133,11 +154,12 @@ VALUE build_ecm_params_from_hash (VALUE params_hash) {
   VALUE params_value;
   ECM_PARAMS *params;
   ecm_params_make_struct_init (params_value, params);
+  params->chkfilename = params->TreeFilename = NULL;
   rb_hash_foreach (params_hash, add_item_to_ecm_params, params_value);
   return params_value;
 }
 
-VALUE r_ecmsg_new(int argc, VALUE *argv, VALUE klass)
+VALUE r_ecmsg_new (int argc, VALUE *argv, VALUE klass)
 {
   ECM_PARAMS *res;
   VALUE res_value;
@@ -188,6 +210,7 @@ VALUE r_ecm_factor (int argc, VALUE *argv, VALUE self_value) {
   mpz_init (res);
 
   rb_scan_args (argc, argv, "02", &b1_value, &params_arg);
+
   if (params_arg == Qnil) {
     params = NULL;
   } else if (ECM_PARAMS_P (params_arg)) {
@@ -198,6 +221,7 @@ VALUE r_ecm_factor (int argc, VALUE *argv, VALUE self_value) {
   } else {
     rb_raise (rb_eArgError, "Second argument must be an ECMParams");
   }
+
   if (b1_value == Qnil) {
     b1 = 1000000;
   } else if (FIXNUM_P (b1_value)) {
@@ -210,7 +234,7 @@ VALUE r_ecm_factor (int argc, VALUE *argv, VALUE self_value) {
 
   found = ecm_factor (res, self, b1, params);
 
-  return rb_assoc_new(INT2FIX (found), res_value);
+  return rb_assoc_new (INT2FIX (found), res_value);
 }
 
 void Init_ecm() {
@@ -232,6 +256,10 @@ void Init_ecm() {
   ecmp_verbose_id      = rb_intern("verbose");
   ecmp_os_id           = rb_intern("os");
   ecmp_es_id           = rb_intern("es");
+  ecmp_chkfilename_id  = rb_intern("chkfilename");
+  ecmp_TreeFilename_id = rb_intern("TreeFilename");
+  ecmp_maxmem_id       = rb_intern("maxmem");
+  ecmp_stage1time_id   = rb_intern("stage1time");
   cECM_PARAMS = rb_define_class ("ECMParams", rb_cObject);
 
   // Initialization Functions and Assignment Functions
