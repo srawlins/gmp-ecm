@@ -47,9 +47,12 @@ typedef __gmp_randstate_struct MP_RANDSTATE;
 #define GMPZ_P(value)   (rb_obj_is_instance_of(value, cGMP_Z) == Qtrue)
 #define GMPQ_P(value)   (rb_obj_is_instance_of(value, cGMP_Q) == Qtrue)
 #define GMPF_P(value)   (rb_obj_is_instance_of(value, cGMP_F) == Qtrue)
-#define mpz_set_bignum(var_mpz,var_bignum) {                   \
-  VALUE tmp = rb_funcall (rb_funcall (var_bignum, rb_intern ("to_s"), 1, INT2FIX(32)), rb_intern("upcase"), 0);  \
-  mpz_set_str (var_mpz, StringValuePtr (tmp), 32);              \
+#define mpz_set_bignum(var_mpz,var_bignum) {                         \
+  VALUE tmp = rb_funcall (                                           \
+      rb_funcall (var_bignum, rb_intern ("to_s"), 1, INT2FIX (32)),  \
+      rb_intern("upcase"),                                           \
+      0);                                                            \
+  mpz_set_str (var_mpz, StringValuePtr (tmp), 32);                   \
 }
   /*VALUE tmp = rb_funcall (var_bignum, rb_intern ("to_s"), 1, INT2FIX(32));  \*/
 /*#define mpz_set_bignum(var_mpz,var_bignum) {                   \
@@ -58,10 +61,10 @@ typedef __gmp_randstate_struct MP_RANDSTATE;
 }*/
 #define mpz_temp_alloc(var) { var=malloc(sizeof(MP_INT)); }
 #define mpz_temp_init(var) { mpz_temp_alloc(var); mpz_init(var); }
-#define mpz_temp_from_bignum(var,var_bignum) {                 \
-  mpz_temp_alloc(var);                                         \
-  VALUE tmp = rb_funcall (var_bignum, rb_intern ("to_s"), 1, INT2FIX(32));  \
-  mpz_init_set_str (var, StringValuePtr (tmp), 32);             \
+#define mpz_temp_from_bignum(var,var_bignum) {                               \
+  VALUE tmp = rb_funcall (var_bignum, rb_intern ("to_s"), 1, INT2FIX (32));  \
+  mpz_temp_alloc(var);                                                       \
+  mpz_init_set_str (var, StringValuePtr (tmp), 32);                          \
 }
 #define mpz_temp_free(var) { mpz_clear(var); free(var); }
 #define mpf_temp_alloc(var) { var=malloc(sizeof(MP_FLOAT)); }

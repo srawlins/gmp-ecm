@@ -17,9 +17,14 @@
  */
 typedef __ecm_param_struct ECM_PARAMS;
 
-#define ecm_params_get_struct(ruby_var,c_var)       { Data_Get_Struct(ruby_var, ECM_PARAMS, c_var); }
-#define ecm_params_make_struct(ruby_var,c_var)      { ruby_var = Data_Make_Struct(cECM_PARAMS, ECM_PARAMS, 0, r_ecm_params_free, c_var); }
-#define ecm_params_make_struct_init(ruby_var,c_var) { ecm_params_make_struct(ruby_var,c_var); ecm_init (c_var); }
+#define ecm_params_get_struct(ruby_var,c_var) { Data_Get_Struct(ruby_var, ECM_PARAMS, c_var); }
+#define ecm_params_make_struct(ruby_var,c_var) {                                      \
+  ruby_var = Data_Make_Struct(cECM_PARAMS, ECM_PARAMS, 0, r_ecm_params_free, c_var);  \
+}
+#define ecm_params_make_struct_init(ruby_var,c_var) {  \
+  ecm_params_make_struct(ruby_var,c_var);              \
+  ecm_init (c_var);                                    \
+}
 #define ECM_PARAMS_P(value) (rb_obj_is_instance_of(value,cECM_PARAMS) == Qtrue)
 
 extern VALUE cECM_PARAMS;
