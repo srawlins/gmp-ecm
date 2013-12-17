@@ -8,44 +8,44 @@ describe ECMParams, "new" do
     @z3 = GMP::Z("212252637915375215854013140804296246361")
   end
 
-  it "should allow a missing ECMParams" do
+  it "allows a missing ECMParams" do
     @z.ecm_factor(1_000_000)
   end
 
-  it "should allow a simple hash with :method" do
+  it "allows a simple hash with :method" do
     @z.ecm_factor(1_000_000, :method => :ECM_ECM)
     @z.ecm_factor(1_000_000, :method => :ECM_PM1)
     @z.ecm_factor(1_000_000, :method => :ECM_PP1)
   end
 
-  it "should allow a simple hash with :x" do
+  it "allows a simple hash with :x" do
     @z.ecm_factor(1_000_000, :z => GMP::Z(1_000))
   end
 
-  it "should allow a simple hash with :sigma" do
+  it "allows a simple hash with :sigma" do
     @z2.ecm_factor 1_000_000, :sigma => 7
     @z2.ecm_factor 1_000_000, :sigma => GMP::Z(7)
   end
 
-  it "should allow a simple hash with :sigma_is_A" do
+  it "allows a simple hash with :sigma_is_A" do
     @z2.ecm_factor 1_000_000, :sigma_is_A =>  1, :x => GMP::Z(7)
     @z2.ecm_factor 1_000_000, :sigma_is_A =>  0, :x => GMP::Z(7)
     #@z2.ecm_factor 1_000_000, :sigma_is_A => -1
   end
 
-  it "should allow a simple hash with :go" do
+  it "allows a simple hash with :go" do
     @z3.ecm_factor 1_000_000, :sigma =>  GMP::Z(781683988), :go => GMP::Z(550232165123)
   end
 
-  it "should allow a simple hash with :B1done" do
+  it "allows a simple hash with :B1done" do
     @z3.ecm_factor 1_000_000, :sigma =>  GMP::Z(781683988), :go => GMP::Z(550232165123), :B1done => 1000.0
   end
 
-  it "should allow a simple hash with :B2min" do
+  it "allows a simple hash with :B2min" do
     @z2.ecm_factor 1_000_000, :B2min => 2_000_000
   end
 
-  it "should allow a simple hash with :B2min" do
+  it "allows a simple hash with :B2min" do
     @z2.ecm_factor 1_000_000, :B2 => 2_000_000
   end
 end
@@ -55,7 +55,7 @@ describe ECMParams, "bad types" do
     @z = GMP::Z(2)**255 - 1
   end
 
-  it "should blow up if sigma_is_A is not a Fixnum" do
+  it "blows up if sigma_is_A is not a Fixnum" do
     expect { @z1.ecm_factor 1_000_000, :sigma => 7, :sigma_is_A => 2.3 }.to raise_exception
   end
 end

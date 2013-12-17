@@ -10,9 +10,9 @@ describe GMP::Z, "file operations" do
     FileUtils.rm @filename
   end
 
-  it "should be verbose-ish with :verbose => 1" do
+  it "is verbose-ish with :verbose => 1" do
     @z.ecm_factor(10_000_000, :method => :pm1, :chkfilename => @filename)
     lines = File.read @filename
-    lines.should match(/B1=\d+; N=\d+; X=\d+/)
+    expect(lines).to match(/B1=\d+; N=\d+; X=\d+/)
   end
 end

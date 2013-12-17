@@ -14,11 +14,11 @@ describe GMP::Z, "IO operations" do
     FileUtils.rm @file
   end
 
-  it "should be verbose-ish with :verbose => 1" do
+  it "is verbose-ish with :verbose => 1" do
     @z.ecm_factor(1_000_000, :verbose => 1, :os => @handle)
     lines = File.read @file
-    lines.should match(/Using B1=1000000, B2=\d+, polynomial Dickson\(6\), sigma=\d+/)
-    lines.should match(/Step 1 took \d+ms/)
+    expect(lines).to match(/Using B1=1000000, B2=\d+, polynomial Dickson\(6\), sigma=\d+/)
+    expect(lines).to match(/Step 1 took \d+ms/)
   end
 
   # Using special division for factor of 2^71-1
@@ -29,12 +29,12 @@ describe GMP::Z, "IO operations" do
   # 910 8615  97096 1281819 1.9e+07 3.1e+08 6.2e+09 1.7e+11 2.3e+16 3.1e+21
   # Reached point at infinity, 578029 divides group order
   # Step 1 took 1210ms
-  it "should be verbose-ish with :verbose => 2" do
+  it "is verbose-ish with :verbose => 2" do
     @z.ecm_factor(1_000_000, :verbose => 2, :os => @handle)
     lines = File.read @file
-    lines.should match(/Using special division for factor of 2\^71-1/)
-    lines.should match(/Using B1=1000000, B2=\d+, polynomial Dickson\(6\), sigma=\d+/)
-    lines.should match(/Using .*dF=\d+, k=\d+, d=\d+, d2=\d+, i0=\d+/m)
-    lines.should match(/Step 1 took \d+ms/)
+    expect(lines).to match(/Using special division for factor of 2\^71-1/)
+    expect(lines).to match(/Using B1=1000000, B2=\d+, polynomial Dickson\(6\), sigma=\d+/)
+    expect(lines).to match(/Using .*dF=\d+, k=\d+, d=\d+, d2=\d+, i0=\d+/m)
+    expect(lines).to match(/Step 1 took \d+ms/)
   end
 end
