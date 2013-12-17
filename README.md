@@ -62,6 +62,16 @@ The ECMParams class is not implemented yet. For now, you can supply the `ecm_par
 * Any value expected to be a double must be a ruby Float.
 * Any value expected to be a `FILE*` must be a ruby IO object, typically created with `File.open('filename', 'w')`.
 
+Compatibility
+=============
+
+gmp_ecm has been tested with, and should be compatible with:
+
+* ruby 1.9.3, 2.0.0, 2.1.0-preview2
+* GMP 5.0.5, 5.1.3
+* GMP-ECM 6.3, 6.4.4
+* Mac OS X 10.6
+
 License
 =======
 

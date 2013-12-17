@@ -4,6 +4,7 @@ Gem::Specification.new do |s|
   s.authors = ["srawlins"]
   s.date = "2012-11-09"
   s.description = "gmp_ecm - Elliptic Curve Method Factorization on GMP::Z integers"
+  s.license = "Apache v2"
   s.email = ["sam.rawlins@gmail.com"]
 
   s.extensions = ["ext/extconf.rb"]
