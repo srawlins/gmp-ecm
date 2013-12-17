@@ -39,9 +39,10 @@ void r_ecm_params_free(void *ptr) { ecm_clear (ptr); }
 
 int add_item_to_ecm_params (VALUE key, VALUE value, VALUE params_value) {
   ECM_PARAMS *params;
-  ecm_params_get_struct (params_value, params);
   MP_INT *params_x, *params_sigma, *params_go, *params_B2min, *params_B2;
   FILE *fd;
+  ecm_params_get_struct (params_value, params);
+
   if (rb_to_id (key) == ecmp_method_id) {
     if      ( rb_to_id (value) == ecmp_ecm_ecm_id) { params->method = ECM_ECM; }
     else if ( rb_to_id (value) == ecmp_ecm_pm1_id) { params->method = ECM_PM1; }
